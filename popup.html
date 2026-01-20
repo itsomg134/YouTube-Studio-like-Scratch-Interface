@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch Studio - Video Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #f1f1f1;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #212121;
+            border-bottom: 1px solid #303030;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: #ff0000;
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-menu button {
+            background-color: #3da6ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #3da6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Panel - Media Library */
+        .left-panel {
+            width: 280px;
+            background-color: #212121;
+            border-right: 1px solid #303030;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .media-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .category-btn {
+            background-color: #303030;
+            border: none;
+            color: #f1f1f1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .category-btn:hover {
+            background-color: #3d3d3d;
+        }
+
+        .category-btn.active {
+            background-color: #3da6ff;
+        }
+
+        .media-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .media-item {
+            background-color: #303030;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .media-item:hover {
+            transform: scale(1.03);
+        }
+
+        .media-thumbnail {
+            width: 100%;
+            height: 70px;
+            background-color: #3da6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .video-thumb {
+            background-color: #ff0000;
+        }
+
+        .audio-thumb {
+            background-color: #1db954;
+        }
+
+        .image-thumb {
+            background-color: #ff6b6b;
+        }
+
+        .media-label {
+            padding: 8px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Center Panel - Preview & Timeline */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .preview-container {
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 320px;
+            margin-bottom: 25px;
+            position: relative;
+            border: 1px solid #303030;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #aaa;
+        }
+
+        .preview-placeholder i {
+            font-size: 64px;
+            margin-bottom: 15px;
+            color: #3da6ff;
+        }
+
+        .timeline-container {
+            background-color: #212121;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #303030;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .timeline-tracks {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .track {
+            background-color: #303030;
+            height: 60px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .track-label {
+            width: 80px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .track-content {
+            flex: 1;
+            height: 40px;
+            background-color: #212121;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .clip {
+            position: absolute;
+            height: 36px;
+            border-radius: 4px;
+            top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: grab;
+            user-select: none;
+            min-width: 60px;
+        }
+
+        .video-clip {
+            background-color: #ff0000;
+        }
+
+        .audio-clip {
+            background-color: #1db954;
+        }
+
+        .text-clip {
+            background-color: #3da6ff;
+        }
+
+        .playhead {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background-color: #3da6ff;
+            top: 0;
+            left: 30%;
+            z-index: 10;
+        }
+
+        .playhead::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #3da6ff;
+            border-radius: 50%;
+            top: -5px;
+            left: -5px;
+        }
+
+        /* Right Panel - Editing Tools */
+        .right-panel {
+            width: 300px;
+            background-color: #212121;
+            border-left: 1px solid #303030;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .tool-section {
+            margin-bottom: 25px;
+        }
+
+        .tool-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tool-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tool-option label {
+            font-size: 14px;
+        }
+
+        .slider-container {
+            width: 150px;
+        }
+
+        .slider-container input {
+            width: 100%;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background-color: #303030;
+            border: none;
+            color: #f1f1f1;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #3d3d3d;
+        }
+
+        .btn-primary {
+            background-color: #3da6ff;
+        }
+
+        .btn-primary:hover {
+            background-color: #2d8fdf;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 15px 20px;
+            background-color: #212121;
+            border-top: 1px solid #303030;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transport-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .transport-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #303030;
+            border: none;
+            color: #f1f1f1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .transport-btn:hover {
+            background-color: #3d3d3d;
+        }
+
+        .transport-btn.play {
+            background-color: #3da6ff;
+        }
+
+        .time-display {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .left-panel {
+                width: 240px;
+            }
+            
+            .right-panel {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <h1>Scratch Studio</h1>
+            </div>
+            <div class="user-menu">
+                <button id="exportBtn">
+                    <i class="fas fa-download"></i> Export Video
+                </button>
+                <div class="user-avatar">JS</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Media Library -->
+            <div class="left-panel">
+                <div class="panel-title">
+                    <i class="fas fa-photo-video"></i>
+                    <span>Media Library</span>
+                </div>
+                
+                <div class="media-categories">
+                    <button class="category-btn active">
+                        <i class="fas fa-video"></i> Video Clips
+                    </button>
+                    <button class="category-btn">
+                        <i class="fas fa-music"></i> Audio
+                    </button>
+                    <button class="category-btn">
+                        <i class="fas fa-image"></i> Images
+                    </button>
+                    <button class="category-btn">
+                        <i class="fas fa-text-height"></i> Text
+                    </button>
+                </div>
+                
+                <div class="panel-title">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Media Items</span>
+                </div>
+                
+                <div class="media-items">
+                    <div class="media-item" data-type="video" data-duration="15">
+                        <div class="media-thumbnail video-thumb">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="media-label">Beach Scene</div>
+                    </div>
+                    <div class="media-item" data-type="video" data-duration="8">
+                        <div class="media-thumbnail video-thumb">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="media-label">City Timelapse</div>
+                    </div>
+                    <div class="media-item" data-type="audio" data-duration="30">
+                        <div class="media-thumbnail audio-thumb">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="media-label">Background Music</div>
+                    </div>
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail image-thumb">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="media-label">Logo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel - Preview & Timeline -->
+            <div class="center-panel">
+                <!-- Preview Window -->
+                <div class="preview-container">
+                    <div class="preview-placeholder">
+                        <i class="fas fa-play-circle"></i>
+                        <h3>Video Preview</h3>
+                        <p>Drag media clips to the timeline to start editing</p>
+                    </div>
+                    <div class="playhead"></div>
+                </div>
+                
+                <!-- Timeline -->
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <div class="panel-title">
+                            <i class="fas fa-stream"></i>
+                            <span>Timeline</span>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn" id="zoomInBtn">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="btn" id="zoomOutBtn">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-tracks" id="timelineTracks">
+                        <div class="track">
+                            <div class="track-label">Video 1</div>
+                            <div class="track-content">
+                                <div class="clip video-clip" style="width: 120px; left: 10px;">
+                                    Beach Scene
+                                </div>
+                                <div class="clip video-clip" style="width: 80px; left: 150px;">
+                                    City Clip
+                                </div>
+                            </div>
+                        </div>
+                        <div class="track">
+                            <div class="track-label">Audio</div>
+                            <div class="track-content">
+                                <div class="clip audio-clip" style="width: 200px; left: 20px;">
+                                    Background Music
+                                </div>
+                            </div>
+                        </div>
+                        <div class="track">
+                            <div class="track-label">Text</div>
+                            <div class="track-content">
+                                <div class="clip text-clip" style="width: 100px; left: 100px;">
+                                    Welcome Text
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Editing Tools -->
+            <div class="right-panel">
+                <div class="tool-section">
+                    <div class="tool-title">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Video Properties</span>
+                    </div>
+                    <div class="tool-options">
+                        <div class="tool-option">
+                            <label for="brightness">Brightness</label>
+                            <div class="slider-container">
+                                <input type="range" id="brightness" min="0" max="200" value="100">
+                            </div>
+                        </div>
+                        <div class="tool-option">
+                            <label for="contrast">Contrast</label>
+                            <div class="slider-container">
+                                <input type="range" id="contrast" min="0" max="200" value="100">
+                            </div>
+                        </div>
+                        <div class="tool-option">
+                            <label for="volume">Volume</label>
+                            <div class="slider-container">
+                                <input type="range" id="volume" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="tool-title">
+                        <i class="fas fa-cut"></i>
+                        <span>Edit Tools</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn" id="splitBtn">
+                            <i class="fas fa-cut"></i> Split
+                        </button>
+                        <button class="btn" id="trimBtn">
+                            <i class="fas fa-crop"></i> Trim
+                        </button>
+                        <button class="btn" id="deleteBtn">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="tool-title">
+                        <i class="fas fa-magic"></i>
+                        <span>Effects</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn">
+                            <i class="fas fa-sun"></i> Filters
+                        </button>
+                        <button class="btn">
+                            <i class="fas fa-film"></i> Transitions
+                        </button>
+                        <button class="btn">
+                            <i class="fas fa-closed-captioning"></i> Captions
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="tool-title">
+                        <i class="fas fa-cogs"></i>
+                        <span>Export Settings</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn">
+                            480p
+                        </button>
+                        <button class="btn btn-primary">
+                            720p
+                        </button>
+                        <button class="btn">
+                            1080p
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="transport-controls">
+                <button class="transport-btn" id="rewindBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="transport-btn play" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="transport-btn" id="forwardBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            
+            <div class="time-display">
+                <span id="currentTime">00:00</span> / <span id="totalTime">01:30</span>
+            </div>
+            
+            <div>
+                <button class="btn" id="saveBtn">
+                    <i class="fas fa-save"></i> Save Project
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const mediaItems = document.querySelectorAll('.media-item');
+        const timelineTracks = document.getElementById('timelineTracks');
+        const playBtn = document.getElementById('playBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const playhead = document.querySelector('.playhead');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+        
+        // State variables
+        let isPlaying = false;
+        let currentTime = 0;
+        const totalTime = 90; // 1:30 in seconds
+        let playInterval;
+        
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Initialize time displays
+        currentTimeDisplay.textContent = formatTime(currentTime);
+        totalTimeDisplay.textContent = formatTime(totalTime);
+        
+        // Play/Pause functionality
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            
+            if (isPlaying) {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                
+                playInterval = setInterval(() => {
+                    currentTime += 0.1;
+                    if (currentTime >= totalTime) {
+                        currentTime = 0;
+                    }
+                    
+                    // Update time display
+                    currentTimeDisplay.textContent = formatTime(Math.floor(currentTime));
+                    
+                    // Move playhead
+                    const playheadPosition = (currentTime / totalTime) * 100;
+                    playhead.style.left = `${playheadPosition}%`;
+                }, 100);
+            } else {
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                clearInterval(playInterval);
+            }
+        });
+        
+        // Export button functionality
+        exportBtn.addEventListener('click', () => {
+            alert('Video exported successfully! This would typically download your video file.');
+        });
+        
+        // Save button functionality
+        saveBtn.addEventListener('click', () => {
+            alert('Project saved!');
+        });
+        
+        // Media item drag and drop functionality
+        mediaItems.forEach(item => {
+            item.setAttribute('draggable', 'true');
+            
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', JSON.stringify({
+                    type: item.dataset.type,
+                    label: item.querySelector('.media-label').textContent,
+                    duration: item.dataset.duration || 5
+                }));
+            });
+        });
+        
+        // Timeline drop functionality
+        timelineTracks.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        
+        timelineTracks.addEventListener('drop', (e) => {
+            e.preventDefault();
+            
+            // Get the dragged data
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            
+            // Find which track we're dropping on
+            const tracks = document.querySelectorAll('.track');
+            let targetTrack = null;
+            
+            tracks.forEach(track => {
+                const rect = track.getBoundingClientRect();
+                if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    targetTrack = track;
+                }
+            });
+            
+            if (targetTrack) {
+                const trackContent = targetTrack.querySelector('.track-content');
+                const trackRect = trackContent.getBoundingClientRect();
+                
+                // Calculate position within track
+                const position = ((e.clientX - trackRect.left) / trackRect.width) * 100;
+                const clampedPosition = Math.max(0, Math.min(position, 95));
+                
+                // Create a new clip
+                const newClip = document.createElement('div');
+                newClip.className = `clip ${data.type}-clip`;
+                
+                // Set clip width based on duration (1 second = 20px)
+                const clipWidth = (data.duration || 5) * 20;
+                newClip.style.width = `${clipWidth}px`;
+                newClip.style.left = `${clampedPosition}%`;
+                newClip.textContent = data.label;
+                
+                // Make clip draggable
+                newClip.setAttribute('draggable', 'true');
+                
+                // Add drag functionality to the new clip
+                newClip.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', 'moving');
+                    e.dataTransfer.setData('clip', newClip.outerHTML);
+                    
+                    // Remove the clip after a short delay to allow drop
+                    setTimeout(() => {
+                        if (newClip.parentNode) {
+                            newClip.parentNode.removeChild(newClip);
+                        }
+                    }, 0);
+                });
+                
+                // Add click to select functionality
+                newClip.addEventListener('click', () => {
+                    // Remove selection from all clips
+                    document.querySelectorAll('.clip').forEach(clip => {
+                        clip.style.boxShadow = 'none';
+                    });
+                    
+                    // Add selection to clicked clip
+                    newClip.style.boxShadow = '0 0 0 2px #3da6ff';
+                });
+                
+                trackContent.appendChild(newClip);
+                
+                // Show success message
+                alert(`Added "${data.label}" to timeline`);
+            }
+        });
+        
+        // Category button functionality
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // In a real app, this would filter media items
+                const category = button.textContent.trim();
+                alert(`Showing ${category} items`);
+            });
+        });
+        
+        // Tool sliders functionality
+        const sliders = document.querySelectorAll('input[type="range"]');
+        sliders.forEach(slider => {
+            slider.addEventListener('input', () => {
+                // In a real app, this would update video properties
+                console.log(`${slider.id}: ${slider.value}`);
+            });
+        });
+        
+        // Tool buttons functionality
+        const toolButtons = document.querySelectorAll('.tool-section .btn');
+        toolButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.textContent.trim();
+                
+                // Handle different tool actions
+                switch(action) {
+                    case 'Split':
+                        alert('Clip split at playhead position');
+                        break;
+                    case 'Trim':
+                        alert('Trim tool activated - drag edges to trim clip');
+                        break;
+                    case 'Delete':
+                        const selectedClip = document.querySelector('.clip[style*="box-shadow"]');
+                        if (selectedClip) {
+                            selectedClip.remove();
+                            alert('Clip deleted');
+                        } else {
+                            alert('Select a clip to delete');
+                        }
+                        break;
+                    default:
+                        // For other buttons, just show a message
+                        if (!button.classList.contains('btn-primary')) {
+                            alert(`${action} tool activated`);
+                        }
+                }
+            });
+        });
+        
+        // Zoom buttons functionality
+        document.getElementById('zoomInBtn').addEventListener('click', () => {
+            alert('Zooming in on timeline');
+        });
+        
+        document.getElementById('zoomOutBtn').addEventListener('click', () => {
+            alert('Zooming out on timeline');
+        });
+        
+        // Transport controls
+        document.getElementById('rewindBtn').addEventListener('click', () => {
+            currentTime = Math.max(0, currentTime - 5);
+            currentTimeDisplay.textContent = formatTime(Math.floor(currentTime));
+            
+            // Move playhead
+            const playheadPosition = (currentTime / totalTime) * 100;
+            playhead.style.left = `${playheadPosition}%`;
+        });
+        
+        document.getElementById('forwardBtn').addEventListener('click', () => {
+            currentTime = Math.min(totalTime, currentTime + 5);
+            currentTimeDisplay.textContent = formatTime(Math.floor(currentTime));
+            
+            // Move playhead
+            const playheadPosition = (currentTime / totalTime) * 100;
+            playhead.style.left = `${playheadPosition}%`;
+        });
+        
+        // Initialize some clips as selected
+        document.querySelector('.clip').style.boxShadow = '0 0 0 2px #3da6ff';
+    </script>
+</body>
+</html>
