@@ -4,6 +4,10 @@
 A Scratch-style video editor interface built with HTML, CSS, and JavaScript that mimics YouTube Studio's functionality. This project provides a drag-and-drop video editing experience entirely in the browser.
 
 
+![Digital Calendar Preview](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
 <img width="1902" height="914" alt="image" src="https://github.com/user-attachments/assets/46cf06d8-a798-451d-8bc6-db07bcbc4d84" />
 
 ## ✨ Features
