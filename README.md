@@ -4,6 +4,7 @@
 A Scratch-style video editor interface built with HTML, CSS, and JavaScript that mimics YouTube Studio's functionality. This project provides a drag-and-drop video editing experience entirely in the browser.
 
 
+<img width="1902" height="914" alt="image" src="https://github.com/user-attachments/assets/46cf06d8-a798-451d-8bc6-db07bcbc4d84" />
 
 ## ✨ Features
 
@@ -176,4 +177,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-demonstration project. In a production environment, additional security measures, performance optimizations, and backend services would be implemented.*
+Om Gedam
+
+GitHub: @itsomg134
+
+Email: omgedam123098@gmail.com
+
+Twitter (X): @omgedam
+
+LinkedIn: Om Gedam
+
+Portfolio: https://ogworks.lovable.app
